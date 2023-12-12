@@ -1,0 +1,25 @@
+server:
+  port: 8080
+
+spring:
+  datasource:
+    hikari:
+      connection-timeout: 2500
+      max-lifetime: 600000
+      maximum-pool-size: 1
+      minimum-idle: 1
+      maxLifetime: 300000
+
+logging:
+  level:
+    root: TRACE
+    org:
+      hibernate:
+        SQL: WARN
+      springframework: INFO
+
+azure:
+  application-insights:
+    enabled: false
+    web:
+      enabled: false

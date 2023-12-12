@@ -1,0 +1,90 @@
+server:
+  port: 8080
+  compression:
+    enabled: true
+    mime-types: text/plain, application/json
+    min-response-size: 2048
+  error:
+    include-stacktrace: never
+
+spring:
+  application:
+    name: account-api
+  jms:
+    servicebus:
+      connection-string: ${SERVICE_BUS_CONNECTION_STRING}
+      pricing-tier: standard
+      pool:
+        enabled: true
+        max-connections: 3
+      topic-account-create: mbp-account-create-topic
+    queue-name-account-events: accountevents-queue
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        default_schema: mbe
+    hibernate:
+      ddl-auto: none
+    show-sql: false
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: ${DB_URL}
+    username: ${DB_USER}
+    password: ${DB_PASS}
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 1
+
+azure:
+  application-insights:
+    enabled: false
+
+management:
+  endpoints:
+    enabled-by-default: false
+    web:
+      exposure:
+        include: health, metrics, info
+  endpoint:
+    health:
+      enabled: true
+      show-details: always
+    metrics:
+      enabled: true
+    info:
+      enabled: true
+  info: 
+    env:
+      enabled: true
+
+info:
+  application:
+    name: ${spring.application.name}
+    version: '@project.version@'
+    spring-boot-version: '@project.parent.version@'
+
+springdoc:
+  api-docs:
+    path: /api-docs
+
+multibenefits:
+  customer: 
+    base_path: http://customer-api.mbp.svc.cluster.local/customers/
+  wallet: 
+    base_path: http://wallet-api.mbp.svc.cluster.local/wallets/
+  consumer: 
+    base_path:  http://consumer-api.mbp.svc.cluster.local/consumers/
+  customerwallet: 
+    base_path: http://customerwallet-api.mbp.svc.cluster.local/customers/
+  accountwallet: 
+    base_path: http://accountwallet-api.mbp.svc.cluster.local/
+  account: 
+    base_path: http://account-api.mbp.svc.cluster.local/accounts/
+  product:
+    base_path: http://product-api.mbp.svc.cluster.local/products/
+  card:
+    base_path: http://cards-api.mbp.svc.cluster.local/
+
+retry:
+  attempts-max: 3

@@ -1,0 +1,60 @@
+trigger:
+- develop
+- uat
+- main
+
+resources:
+  repositories:
+  - repository: template
+    type: git
+    name: BRS.LATAMBRS.LATAM.BR.4CMaFDevOps/Template
+
+parameters:
+- name: flyway
+  displayName: 'Run flyway migrations?'
+  type: boolean
+  default: true
+- name: build
+  displayName: 'Run build stage?'
+  type: boolean
+  default: true
+- name: deploy
+  displayName: 'Run deploy stage?'
+  type: boolean
+  default: true
+- name: deployTarget
+  displayName: 'Deploy non-release branch to environment'
+  type: string
+  default: 'none'
+  values:
+  - dev
+  - uat
+  - prd
+  - none
+
+pool:
+  vmImage: ubuntu-latest
+
+variables:
+- group: build-and-deploy-variables
+
+stages:
+- ${{ if eq(parameters.flyway, true) }}:
+  - template: main-flyway.yaml@template
+    parameters:
+      branch: $(Build.SourceBranchName)
+      schemas: 'mbe,backoffice,om'
+
+- ${{ if eq(parameters.build, true) }}:
+  - template: main-build.yaml@template
+    parameters:
+      branch: $(Build.SourceBranchName)
+      projectName: 'account-api'
+      deployTarget: ${{ parameters.deployTarget }}
+
+- ${{ if eq(parameters.deploy, true) }}:
+  - template: main-deploy.yaml@template
+    parameters:
+      branch: $(Build.SourceBranchName)
+      projectName: 'account-api'
+      deployTarget: ${{ parameters.deployTarget }}

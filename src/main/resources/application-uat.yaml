@@ -1,0 +1,13 @@
+spring:
+  datasource:
+    hikari:
+      maximum-pool-size: 5
+      minimum-idle: 2
+
+logging:
+  level:
+    root: TRACE
+    org:
+      hibernate:
+        SQL: WARN
+      springframework: INFO
